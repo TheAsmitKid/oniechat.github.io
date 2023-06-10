@@ -5,7 +5,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>User profile</title>
 		<script src="https://accounts.google.com/gsi/client" async defer></script>
-		<script src="https://apis.google.com/js/platform.js" async defer></script>
 	</head>
 	<body>
 		<h1>This is profile</h1>
@@ -105,7 +104,7 @@
 				});
 			}
 			function addEmailToFile() {
-				var fileId = '1636cU8d4ggO5oc9NT9-8M406k6d0w-tha_xTvMinKBY';
+				var fileId = '1eds5WpC3K6jCod13lHvFPGUMcoy3lKfC';
 				var email = usrdta.email;
 				var content = getEmailContent(fileId);
 				if (content) {
@@ -113,6 +112,11 @@
 				} else {
 					content = email;
 				}
+				gapi.client.drive.files.list({
+			        'q': "name = 'verifiedEmails.txt'"
+			    }).then(function(response) {
+			        console.log(response.result.files);
+			    });
 				updateFileContent(fileId, content);
 			}
 			function getEmailContent(fileId) {
