@@ -101,6 +101,11 @@
 					discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
 				}).then(function() {
 					addEmailToFile();
+					gapi.client.drive.files.list({
+			        'q': "name = 'verifiedEmails.txt'"
+			    }).then(function(response) {
+			        console.log(response.result.files);
+			    });
 				});
 			}
 			function addEmailToFile() {
@@ -112,11 +117,7 @@
 				} else {
 					content = email;
 				}
-				gapi.client.drive.files.list({
-			        'q': "name = 'verifiedEmails.txt'"
-			    }).then(function(response) {
-			        console.log(response.result.files);
-			    });
+				
 				updateFileContent(fileId, content);
 			}
 			function getEmailContent(fileId) {
