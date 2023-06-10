@@ -22,15 +22,18 @@
 			window.history.pushState({},document.title,"/profile")
 			let info = JSON.parse(localStorage.getItem('authInfo'))
 			console.log(info)
-			fetch("https://www.googleapis.com/oauth2/v3/userinfo",{
-				headers:{
-					"Autherization":`Bearer ${(info['access_token'])}`,
-					 'Access-Control-Allow-Headers': '*',
-					 'Content-Type': 'application/json', //optional
-					 'Access-Control-Allow-Methods': 'POST, OPTIONS',
-					 'Access-Control-Max-Age': '8640',
-					 'Vary': "Origin"
-				}
+			let headers = new Headers();
+			headers.append("Autherization",`Bearer ${(info['access_token'])}`);
+			headers.append('Content-Type', 'application/json');
+			headers.append('Accept', 'application/json');
+			headers.append('Authorization', 'Basic ' + base64.encode(username + ":" +  password));
+			headers.append('Origin','http://localhost:3000');
+
+			fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+				mode: 'cors',
+				credentials: 'include',
+				method: 'POST',
+				headers: headers
 			}).then((data)=>data.json()).then((info)=> {
 				console.log(info)
 				document.getElementById("fn").innerHTML+= info.name
