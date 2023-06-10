@@ -21,19 +21,9 @@
 			}
 			window.history.pushState({},document.title,"/profile")
 			let info = JSON.parse(localStorage.getItem('authInfo'))
-			console.log(info)
-			let headers = new Headers();
-			headers.append("Autherization",`Bearer ${(info['access_token'])}`);
-			headers.append('Content-Type', 'application/json');
-			headers.append('Accept', 'application/json');
-			headers.append('Origin','https://oniechat.netlify.app');
-
-			fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-				mode: 'no-cors',
-				credentials: 'include',
-				method: 'GET',
-				headers: headers
-			}).then((data)=>data.json()).then((info)=> {
+			console.log(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${info[access_token]}`)
+			fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${info[access_token]}`
+			).then((data)=>data.json()).then((info)=> {
 				console.log(info)
 				document.getElementById("fn").innerHTML+= info.name
 				document.getElementById("Image").setAttribute('src',info.picture)
