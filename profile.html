@@ -54,7 +54,6 @@
 			      .catch(function(error) {
 				console.log(error);
 			      });
-			    }
 			function logout(){
 				fetch(`https://oauth2.googleapis.com/revoke?token=${info["access_token"]}`,{
 					method:'POST',
