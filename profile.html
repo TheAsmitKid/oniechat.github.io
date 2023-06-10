@@ -26,7 +26,6 @@
 			headers.append("Autherization",`Bearer ${(info['access_token'])}`);
 			headers.append('Content-Type', 'application/json');
 			headers.append('Accept', 'application/json');
-			headers.append('Authorization', 'Basic ' + base64.encode(username + ":" +  password));
 			headers.append('Origin','http://localhost:3000');
 
 			fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
