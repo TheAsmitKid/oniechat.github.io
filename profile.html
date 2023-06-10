@@ -10,6 +10,7 @@
 		<h2 id="fn">yr fn is: </h2>
 		<img id="image"/>
 		<button onclick="logout()">Logout</button>
+		<button onclick="makeliil()">Make Folder "LIIL"</button>
 		<script type="text/javascript">
 			let params = {}
 			let regex = /([^&=]+)=([^&]*)/g, m
@@ -38,6 +39,32 @@
 				.then((data)=>{
 					location.href="https://oniechat.netlify.app/"
 				})
+			}
+			function createFolderInDrive(accessToken, folderName) {
+			  // Set up the request parameters
+			  var folderData = {
+			    name: folderName,
+			    mimeType: 'application/vnd.google-apps.folder'
+			  };
+
+			  var request = new XMLHttpRequest();
+			  request.open('POST', 'https://www.googleapis.com/drive/v3/files');
+			  request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+			  request.setRequestHeader('Content-Type', 'application/json');
+			  request.onload = function() {
+			    if (request.status === 200) {
+			      var folder = JSON.parse(request.responseText);
+			      console.log('Folder created with ID:', folder.id);
+			    } else {
+			      console.error('Error creating folder:', request.status, request.responseText);
+			    }
+			  };
+
+			  // Send the request
+			  request.send(JSON.stringify(folderData));
+			}
+			function makeliil(){
+				createFolderInDrive(info['access_token'], 'liil');
 			}
 		</script>
 	</body>
