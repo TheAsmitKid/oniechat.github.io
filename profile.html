@@ -29,7 +29,7 @@
 			}).then((data)=>data.json()).then((info)=> {
 				console.log(info)
 				document.getElementById("fn").innerHTML+= info.name
-				document.getElementById("Image").setAttribute('src') = info.picture
+				document.getElementById("Image").setAttribute('src',info.picture)
 			function logout(){
 			}
 		</script>
