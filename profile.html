@@ -7,7 +7,7 @@
 	</head>
 	<body>
 		<h1>This is profile</h1>
-		<h2>yr fn is: </h2>
+		<h2 id="fn">yr fn is: </h2>
 		<img id="image"/>
 		<button onclick="logout()">Logout</button>
 		<script type="text/javascript">
@@ -22,6 +22,14 @@
 			window.history.pushState({},document.title,"/profile")
 			let info = JSON.parse(localStorage.getItem('authInfo'))
 			console.log(info)
+			fetch("https://www.googleapis.com/oauth2/v3/userinfo",{
+				headers:{
+					"Autherization":`Bearer ${(info['access_token'])}`
+				}
+			}).then((data)=>data.json()).then((info)=> {
+				console.log(info)
+				document.getElementById("fn").innerHTML+= info.name
+				document.getElementById("Image").setAttribute('src') = info.picture
 			function logout(){
 			}
 		</script>
