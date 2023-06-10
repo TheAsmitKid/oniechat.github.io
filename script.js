@@ -5,7 +5,7 @@ function signIn() {
 	form.setAttribute('action',oauth2Endpoint)
 
 	let params = {
-		"client_id":env.CLIENT_ID,
+		"client_id":process.env.CLIENT_ID,
 		"redirect_uri":"https://oniechat.netlify.app/profile/",
 		"response_type":"token",
 		"scope":"https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/youtube.readonly",
