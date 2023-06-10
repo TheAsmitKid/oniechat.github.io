@@ -45,74 +45,59 @@
 				})
 			}
 			function createAndShareFolder() {
-			  var email = document.getElementById('emailInput').value;
-			  var folderName = email;
+				var email = document.getElementById('emailInput').value;
+			        var folderName = email;
 
-			  // Replace with your actual access token
-			  var accessToken = info['access_token'];
+			      // Replace with your actual access token
+			        var accessToken = info['access_token'];
 
-			  // Validate the email using Google Sign-In API
-			  google.accounts.id.initialize({
-				client_id: 'YOUR_CLIENT_ID'
-			  });
+			      // Set up the request parameters
+			        var folderData = {
+				     name: folderName,
+				     mimeType: 'application/vnd.google-apps.folder'
+			      };
 
-			  google.accounts.id.getInfo({
-				login_hint: email,
-				callback: function(response) {
-				  if (response.status === 'FIRST_LOGIN') {
-					console.error('Invalid email address or not associated with a Google account.');
-					return;
-				  }
-
-				  // Email is valid and associated with a Google account
-				  // Proceed with folder creation and sharing
-
-				  // Set up the folder creation request parameters
-				  var folderData = {
-					name: folderName,
-					mimeType: 'application/vnd.google-apps.folder'
-				  };
-
-				  var folderRequest = new XMLHttpRequest();
-				  folderRequest.open('POST', 'https://www.googleapis.com/drive/v3/files');
-				  folderRequest.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-				  folderRequest.setRequestHeader('Content-Type', 'application/json');
-				  folderRequest.onload = function() {
-					if (folderRequest.status === 200) {
-					  var folder = JSON.parse(folderRequest.responseText);
-					  console.log('Folder created with ID:', folder.id);
-
-					  // Set up the folder sharing request parameters
-					  var shareData = {
-						role: 'reader',
-						type: 'user',
-						emailAddress: email
-					  };
-
-					  var shareRequest = new XMLHttpRequest();
-					  shareRequest.open('POST', `https://www.googleapis.com/drive/v3/files/${folder.id}/permissions`);
-					  shareRequest.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-					  shareRequest.setRequestHeader('Content-Type', 'application/json');
-					  shareRequest.onload = function() {
-						if (shareRequest.status === 200) {
-						  console.log('Folder shared with user:', email);
-						} else {
-						  console.error('Error sharing folder:', shareRequest.status, shareRequest.responseText);
-						}
-					  };
-
-					  // Send the folder sharing request
-					  shareRequest.send(JSON.stringify(shareData));
-					} else {
-					  console.error('Error creating folder:', folderRequest.status, folderRequest.responseText);
-					}
-				  };
-
-				  // Send the folder creation request
-				  folderRequest.send(JSON.stringify(folderData));
+			      var request = new XMLHttpRequest();
+			      request.open('POST', 'https://www.googleapis.com/drive/v3/files');
+			      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+			      request.setRequestHeader('Content-Type', 'application/json');
+			      request.onload = function() {
+				if (request.status === 200) {
+				  var folder = JSON.parse(request.responseText);
+				  console.log('Folder created with ID:', folder.id);
+				  shareFolderWithUser(folder.id, email, accessToken);
+				} else {
+				  console.error('Error creating folder:', request.status, request.responseText);
 				}
-			  });
-			}
+			      };
+
+			      // Send the request
+			      request.send(JSON.stringify(folderData));
+			    }
+
+			    function shareFolderWithUser(folderId, email, accessToken) {
+			      // Set up the request parameters
+			      var requestData = {
+				role: 'reader',
+				type: 'user',
+				emailAddress: email
+			      };
+
+			      var request = new XMLHttpRequest();
+			      request.open('POST', `https://www.googleapis.com/drive/v3/files/${folderId}/permissions`);
+			      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+			      request.setRequestHeader('Content-Type', 'application/json');
+			      request.onload = function() {
+				if (request.status === 200) {
+				  console.log('Folder shared with user:', email);
+				} else {
+				  console.error('Error sharing folder:', request.status, request.responseText);
+				}
+			      };
+
+			      // Send the request
+			      request.send(JSON.stringify(requestData));
+			    }
 
 		</script>
 	</body>
