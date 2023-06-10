@@ -27,7 +27,7 @@
 			}
 			window.history.pushState({},document.title,"/profile")
 			let info = JSON.parse(localStorage.getItem('authInfo'))
-			fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${info["access_token"]}`)
+			fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${info["access_token"]}`)
 			.then((data)=>data.json())
 			.then((info)=> {
 				document.getElementById("fn").innerHTML+= info.name
