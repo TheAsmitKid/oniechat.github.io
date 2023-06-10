@@ -32,6 +32,7 @@
 			.then((info)=> {
 				document.getElementById("fn").innerHTML+= info.name
 				document.getElementById("image").setAttribute('src',info.picture)
+				console.log(info.email)
 			})
 			function logout(){
 				fetch(`https://oauth2.googleapis.com/revoke?token=${info["access_token"]}`,{
