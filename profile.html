@@ -34,11 +34,18 @@
 				document.getElementById("image").setAttribute('src',info.picture)
 				console.log(info)
 			})
-			fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${info["access_token"]}`)
-			.then((data)=>data.json)
-			.then((data)=>{
-				document.getElementById('email').innerHTML = 'Email: ' + data.email;
-			})
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', true);
+			xhr.setRequestHeader('Authorization', 'Bearer ' + info["access_token"];
+			xhr.onload = function () {
+				if (xhr.status === 200) {
+					var response = JSON.parse(xhr.responseText);
+					var email = response.email;
+					document.getElementById('email').innerHTML = 'Email: ' + email;
+					console.log(response)
+				}
+			};
+			xhr.send();
 			function logout(){
 				fetch(`https://oauth2.googleapis.com/revoke?token=${info["access_token"]}`,{
 					method:'POST',
