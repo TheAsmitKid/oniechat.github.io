@@ -1,5 +1,5 @@
 function signIn() {
-	let oauth2Endpoint = "https://accounds.google.com/o/oauth2/v2/auth"
+	let oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth"
 	let form = document.createElement('form')
 	form.setAttribute('method','GET')
 	form.setAttribute('action',oauth2Endpoint)
