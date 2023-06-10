@@ -37,6 +37,7 @@
 			var xhr = new XMLHttpRequest();
 			xhr.open('GET', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', true);
 			xhr.setRequestHeader('Authorization', 'Bearer ' + info["access_token"]);
+			request.setRequestHeader('Content-Type', 'application/json');
 			xhr.setRequestHeader("scopes",[ "https://www.googleapis.com/auth/userinfo.email" ]);
 			xhr.onload = function () {
 				if (xhr.status === 200) {
