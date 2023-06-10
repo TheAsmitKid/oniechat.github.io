@@ -15,6 +15,7 @@
 		<label for="emailInput">Email:</label>
 		<input type="text" id="emailInput">
 		<button onclick="createAndShareFolder()">Share</button>
+		<div id="email"></div>
 		<script type="text/javascript">
 			let params = {}
 			let regex = /([^&=]+)=([^&]*)/g, m
@@ -34,6 +35,17 @@
 				document.getElementById("image").setAttribute('src',info.picture)
 				console.log(info)
 			})
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json', true);
+			xhr.setRequestHeader('Authorization', 'Bearer ' + info["access_token"]);
+			xhr.onload = function () {
+				if (xhr.status === 200) {
+					var response = JSON.parse(xhr.responseText);
+					var email = response.email;
+					document.getElementById('email').innerHTML = 'Email: ' + email;
+				}
+			};
+			xhr.send();
 			function logout(){
 				fetch(`https://oauth2.googleapis.com/revoke?token=${info["access_token"]}`,{
 					method:'POST',
