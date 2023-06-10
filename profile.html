@@ -11,6 +11,7 @@
 		<h2 id="fn">yr fn is:</h2>
 		<img id="image"/>
 		<button onclick="logout()">Logout</button>
+		<h4 id="ema"></h4>
 		<h1>Create and Share Folder</h1>
 		<label for="emailInput">Email:</label>
 		<input type="text" id="emailInput">
@@ -18,6 +19,7 @@
 		<script type="text/javascript">
 			let params = {}
 			let regex = /([^&=]+)=([^&]*)/g, m
+			var usrdta
 			while(m = regex.exec(location.href)){
 				params[decodeURIComponent(m[1])]=decodeURIComponent(m[2])
 			}
@@ -26,13 +28,14 @@
 			}
 			window.history.pushState({},document.title,"/profile")
 			let info = JSON.parse(localStorage.getItem('authInfo'))
-			fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${info["access_token"]}`
-			)
+			fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${info["access_token"]}`)
 			.then((data)=>data.json())
 			.then((info)=> {
-				document.getElementById("fn").innerHTML+= info.name
-				document.getElementById("image").setAttribute('src',info.picture)
+				document.getElementById("fn").innerHTML+= info.name;
+				document.getElementById("image").setAttribute('src',info.picture);
+				document.getElementById("ema").innerHTML = info.email;
 				console.log(info);
+				usrdta=info;
 			})
 			function logout(){
 				fetch(`https://oauth2.googleapis.com/revoke?token=${info["access_token"]}`,{
@@ -46,60 +49,101 @@
 				})
 			}
 			function createAndShareFolder() {
-		      var email = document.getElementById('emailInput').value;
-		      var folderName = email;
+				var email = document.getElementById('emailInput').value;
+				var folderName = email;
+				var accessToken = info["access_token"];
+				var folderData = {
+					name: folderName,
+					mimeType: 'application/vnd.google-apps.folder'
+				};
+				var request = new XMLHttpRequest();
+				request.open('POST', 'https://www.googleapis.com/drive/v3/files');
+				request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+				request.setRequestHeader('Content-Type', 'application/json');
+				request.onload = function() {
+					if (request.status === 200) {
+						var folder = JSON.parse(request.responseText);
+						console.log('Folder created with ID:', folder.id);
+						shareFolderWithUser(folder.id, email, accessToken);
+					} else {
+						console.error('Error creating folder:', request.status, request.responseText);
+					}
+				};
+				request.send(JSON.stringify(folderData));
+			}
+			function shareFolderWithUser(folderId, email, accessToken) {
+				var requestData = {
+					role: 'reader',
+					type: 'user',
+					emailAddress: email
+				};
 
-		      // Replace with your actual access token
-		      var accessToken = 'YOUR_ACCESS_TOKEN';
-
-		      // Set up the request parameters
-		      var folderData = {
-		        name: folderName,
-		        mimeType: 'application/vnd.google-apps.folder'
-		      };
-
-		      var request = new XMLHttpRequest();
-		      request.open('POST', 'https://www.googleapis.com/drive/v3/files');
-		      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-		      request.setRequestHeader('Content-Type', 'application/json');
-		      request.onload = function() {
-		        if (request.status === 200) {
-		          var folder = JSON.parse(request.responseText);
-		          console.log('Folder created with ID:', folder.id);
-		          shareFolderWithUser(folder.id, email, accessToken);
-		        } else {
-		          console.error('Error creating folder:', request.status, request.responseText);
-		        }
-		      };
-
-		      // Send the request
-		      request.send(JSON.stringify(folderData));
-		    }
-
-		    function shareFolderWithUser(folderId, email, accessToken) {
-		      // Set up the request parameters
-		      var requestData = {
-		        role: 'reader',
-		        type: 'user',
-		        emailAddress: email
-		      };
-
-		      var request = new XMLHttpRequest();
-		      request.open('POST', `https://www.googleapis.com/drive/v3/files/${folderId}/permissions`);
-		      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-		      request.setRequestHeader('Content-Type', 'application/json');
-		      request.onload = function() {
-		        if (request.status === 200) {
-		          console.log('Folder shared with user:', email);
-		        } else {
-		          console.error('Error sharing folder:', request.status, request.responseText);
-		        }
-		      };
-
-		      // Send the request
-		      request.send(JSON.stringify(requestData));
-		    }
-
+				var request = new XMLHttpRequest();
+					request.open('POST', `https://www.googleapis.com/drive/v3/files/${folderId}/permissions`);
+					request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+					request.setRequestHeader('Content-Type', 'application/json');
+					request.onload = function() {
+					if (request.status === 200) {
+						console.log('Folder shared with user:', email);
+					} else {
+						console.error('Error sharing folder:', request.status, request.responseText);
+					}
+				};
+				request.send(JSON.stringify(requestData));
+			}
+			function handleClientLoad() {
+				gapi.load('client', initClient);
+			}
+			function initClient() {
+				gapi.client.init({
+					apiKey: 'AIzaSyDPMNZmZefjhu4t7TGUa-rkm708e3g6Llk',
+					discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+				}).then(function() {
+					addEmailToFile();
+				});
+			}
+			function addEmailToFile() {
+				var fileId = '1eds5WpC3K6jCod13lHvFPGUMcoy3lKfC';
+				var email = usrdta.email;
+				var content = getEmailContent(fileId);
+				if (content) {
+					content += '\n' + email;
+				} else {
+					content = email;
+				}
+				updateFileContent(fileId, content);
+			}
+			function getEmailContent(fileId) {
+				var request = gapi.client.drive.files.get({
+				fileId: fileId,
+				alt: 'media'
+				});
+				return request.then(function(response) {
+					return response.body;
+				}, function(error) {
+					console.error('Error getting file content:', error);
+					return null;
+				});
+			}
+			function updateFileContent(fileId, content) {
+				var request = gapi.client.request({
+					path: '/upload/drive/v3/files/' + fileId,
+					method: 'PATCH',
+					params: {
+						uploadType: 'media'
+					},
+					headers: {
+						'Content-Type': 'text/plain'
+					},
+					body: content
+				});
+				request.then(function(response) {
+					console.log('File content updated:', response);
+					alert('Email added successfully!');
+				}, function(error) {
+					console.error('Error updating file content:', error);
+				});
+			}
 		</script>
 	</body>
 </html>
