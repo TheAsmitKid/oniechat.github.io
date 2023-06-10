@@ -1,1 +1,29 @@
-
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>User profile</title>
+	</head>
+	<body>
+		<h1>This is profile</h1>
+		<h2>yr fn is: </h2>
+		<img id="image"/>
+		<button onclick="logout()">Logout</button>
+		<script type="text/javascript">
+			let params = {}
+			let regex = /([^&=]+)=([^&]*)/g, m
+			while(m = regex.exec(location.href)){
+				params[decodeURIComponent(m[1])]=decodeURIComponent(m[2])
+			}
+			if(Object.keys(params).length > 0){
+				localStorage.setItem('authInfo',JSON.stringify(params))
+			}
+			window.history.pushState({},document.title,"/profile")
+			let info = JSON.parse(localStorage.getItem('authInfo'))
+			console.log(info)
+			function logout(){
+			}
+		</script>
+	</body>
+</html>
