@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>User profile</title>
 		<script src="https://accounts.google.com/gsi/client" async defer></script>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
 	</head>
 	<body>
 		<h1>This is profile</h1>
@@ -36,6 +37,7 @@
 				document.getElementById("ema").innerHTML = info.email;
 				console.log(info);
 				usrdta=info;
+				handleClientLoad()
 			})
 			function logout(){
 				fetch(`https://oauth2.googleapis.com/revoke?token=${info["access_token"]}`,{
