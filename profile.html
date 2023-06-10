@@ -8,14 +8,13 @@
 	</head>
 	<body>
 		<h1>This is profile</h1>
-		<h2 id="fn">yr fn is: </h2>
+		<h2 id="fn">yr fn is:</h2>
 		<img id="image"/>
 		<button onclick="logout()">Logout</button>
 		<h1>Create and Share Folder</h1>
 		<label for="emailInput">Email:</label>
 		<input type="text" id="emailInput">
 		<button onclick="createAndShareFolder()">Share</button>
-		<div id="email"></div>
 		<script type="text/javascript">
 			let params = {}
 			let regex = /([^&=]+)=([^&]*)/g, m
@@ -27,12 +26,12 @@
 			}
 			window.history.pushState({},document.title,"/profile")
 			let info = JSON.parse(localStorage.getItem('authInfo'))
-			fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${info["access_token"]}`)
+			fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${info["access_token"]}`
+			)
 			.then((data)=>data.json())
 			.then((info)=> {
 				document.getElementById("fn").innerHTML+= info.name
 				document.getElementById("image").setAttribute('src',info.picture)
-				console.log(info)
 			})
 			function logout(){
 				fetch(`https://oauth2.googleapis.com/revoke?token=${info["access_token"]}`,{
@@ -46,59 +45,59 @@
 				})
 			}
 			function createAndShareFolder() {
-				var email = document.getElementById('emailInput').value;
-			        var folderName = email;
+		      var email = document.getElementById('emailInput').value;
+		      var folderName = email;
 
-			      // Replace with your actual access token
-			        var accessToken = info['access_token'];
+		      // Replace with your actual access token
+		      var accessToken = 'YOUR_ACCESS_TOKEN';
 
-			      // Set up the request parameters
-			        var folderData = {
-				     name: folderName,
-				     mimeType: 'application/vnd.google-apps.folder'
-			      };
+		      // Set up the request parameters
+		      var folderData = {
+		        name: folderName,
+		        mimeType: 'application/vnd.google-apps.folder'
+		      };
 
-			      var request = new XMLHttpRequest();
-			      request.open('POST', 'https://www.googleapis.com/drive/v3/files');
-			      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-			      request.setRequestHeader('Content-Type', 'application/json');
-			      request.onload = function() {
-				if (request.status === 200) {
-				  var folder = JSON.parse(request.responseText);
-				  console.log('Folder created with ID:', folder.id);
-				  shareFolderWithUser(folder.id, email, accessToken);
-				} else {
-				  console.error('Error creating folder:', request.status, request.responseText);
-				}
-			      };
+		      var request = new XMLHttpRequest();
+		      request.open('POST', 'https://www.googleapis.com/drive/v3/files');
+		      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+		      request.setRequestHeader('Content-Type', 'application/json');
+		      request.onload = function() {
+		        if (request.status === 200) {
+		          var folder = JSON.parse(request.responseText);
+		          console.log('Folder created with ID:', folder.id);
+		          shareFolderWithUser(folder.id, email, accessToken);
+		        } else {
+		          console.error('Error creating folder:', request.status, request.responseText);
+		        }
+		      };
 
-			      // Send the request
-			      request.send(JSON.stringify(folderData));
-			    }
+		      // Send the request
+		      request.send(JSON.stringify(folderData));
+		    }
 
-			    function shareFolderWithUser(folderId, email, accessToken) {
-			      // Set up the request parameters
-			      var requestData = {
-				role: 'reader',
-				type: 'user',
-				emailAddress: email
-			      };
+		    function shareFolderWithUser(folderId, email, accessToken) {
+		      // Set up the request parameters
+		      var requestData = {
+		        role: 'reader',
+		        type: 'user',
+		        emailAddress: email
+		      };
 
-			      var request = new XMLHttpRequest();
-			      request.open('POST', `https://www.googleapis.com/drive/v3/files/${folderId}/permissions`);
-			      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-			      request.setRequestHeader('Content-Type', 'application/json');
-			      request.onload = function() {
-				if (request.status === 200) {
-				  console.log('Folder shared with user:', email);
-				} else {
-				  console.error('Error sharing folder:', request.status, request.responseText);
-				}
-			      };
+		      var request = new XMLHttpRequest();
+		      request.open('POST', `https://www.googleapis.com/drive/v3/files/${folderId}/permissions`);
+		      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+		      request.setRequestHeader('Content-Type', 'application/json');
+		      request.onload = function() {
+		        if (request.status === 200) {
+		          console.log('Folder shared with user:', email);
+		        } else {
+		          console.error('Error sharing folder:', request.status, request.responseText);
+		        }
+		      };
 
-			      // Send the request
-			      request.send(JSON.stringify(requestData));
-			    }
+		      // Send the request
+		      request.send(JSON.stringify(requestData));
+		    }
 
 		</script>
 	</body>
