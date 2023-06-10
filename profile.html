@@ -29,7 +29,7 @@
 			headers.append('Origin','https://oniechat.netlify.app');
 
 			fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-				mode: 'cors',
+				mode: 'no-cors',
 				credentials: 'include',
 				method: 'POST',
 				headers: headers
