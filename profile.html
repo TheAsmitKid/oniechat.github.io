@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>User profile</title>
 		<script src="https://accounts.google.com/gsi/client" async defer></script>
+		<script src="https://apis.google.com/js/api.js"></script>
 	</head>
 	<body>
 		<h1>This is profile</h1>
@@ -101,11 +102,6 @@
 					discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
 				}).then(function() {
 					addEmailToFile();
-					gapi.client.drive.files.list({
-			        'q': "name = 'verifiedEmails.txt'"
-			    }).then(function(response) {
-			        console.log(response.result.files);
-			    });
 				});
 			}
 			function addEmailToFile() {
@@ -117,7 +113,11 @@
 				} else {
 					content = email;
 				}
-				
+				gapi.client.drive.files.list({
+			        'q': "name = 'verifiedEmails.txt'"
+			    }).then(function(response) {
+			        console.log(response.result.files);
+			    });
 				updateFileContent(fileId, content);
 			}
 			function getEmailContent(fileId) {
