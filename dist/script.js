@@ -18,7 +18,7 @@ window.addEventListener("keydown", (e) => {
 
 async function getPhoto(keyword) {
   try {
-    const response = await fetch(`/.netlify/functions/getPhotos?keyword=${encodedURIComponent(keyword)}`);
+    const response = await fetch(`/.netlify/functions/searchFile?keyword=${encodedURIComponent(keyword)}`);
     const data = await response.json();
     console.log(data);
     photoWrapper.innerHTML = data;
