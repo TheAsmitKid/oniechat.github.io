@@ -1,4 +1,4 @@
-var apiUrl = 'https://script.google.com/macros/s/AKfycbzNpNsuI-d_9EXhB5fyQEXnWpX_4sPvW6iBzakxmO95tBjmauhGrfvidQBES4ETC3Ab/exec';
+var apiUrl = 'https://script.google.com/macros/s/AKfycbxbzK5mQ9nCGW9XSN-nuF7gVJNWh5_1SwozHExJ8xJqKLLpF-t2lWpurmjOyf2DFOGg/exec';
 
 fetch(apiUrl)
   .then(function(response) {
