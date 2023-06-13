@@ -1,0 +1,12 @@
+{
+  "name": "oniechat",
+  "version": "1.0.0",
+  "author": "Asmit Gupta",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run-script",
+  },
+  "dependencies": {
+    "googleapis":"^118.0.0"
+  }
+}
