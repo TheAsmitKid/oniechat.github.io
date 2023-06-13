@@ -1,6 +1,8 @@
-var apiUrl = 'https://script.google.com/macros/s/AKfycbxbzK5mQ9nCGW9XSN-nuF7gVJNWh5_1SwozHExJ8xJqKLLpF-t2lWpurmjOyf2DFOGg/exec';
+var apiUrl = 'https://script.google.com/macros/s/AKfycbzFa7NuK_SXD_M9kG5yOl31_4qjdeAsSyhR-LQEhNbkbqHoU7uhTG_GpHBSjh-YLSGF/exec';
 
-fetch(apiUrl)
+fetch(apiUrl, {
+  mode: 'cors'
+})
   .then(function(response) {
     if (response.ok) {
       return response.json();
@@ -14,34 +16,3 @@ fetch(apiUrl)
   .catch(function(error) {
     console.log('API Error:', error);
   });
-
-
-const searchbar = document.querySelector(".search");
-const submitBtn = document.querySelector(".search-btn");
-const photoWrapper = document.querySelector(".photo-wrapper");
-
-submitBtn.addEventListener("click", () => {
-  getPhoto(searchbar.value);
-  searchbar.value = "";
-  photoWrapper.innerHTML = "";
-});
-
-window.addEventListener("keydown", (e) => {
-  if (e.keyCode === 13) {
-    getPhoto(searchbar.value);
-    searchbar.value = "";
-    photoWrapper.innerHTML = "";
-  }
-});
-
-async function getPhoto(keyword) {
-  try {
-    const response = await fetch(`/.netlify/functions/getPhotos?keyword=${encodedURIComponent(keyword)}`);
-    const data = await response.json();
-    console.log(data);
-    photoWrapper.innerHTML = data;
-  } catch (error) {
-    alert(error);
-    photoWrapper.innerHTML = data;
-  }
-}
