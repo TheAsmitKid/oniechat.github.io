@@ -1,4 +1,4 @@
-var apiUrl = 'https://script.google.com/macros/s/AKfycbxzopciUMKvEyqb7otq_d4MSc37UYC0pnKTVYSLKoEWfk31m7oMLUjVNMM1_0uKP0I/exec';
+var apiUrl = 'https://script.google.com/macros/s/AKfycbzmRJ0KBSJbNAq8XU-PDxVwGlysuxTVr_kmY6BRnNgNhLLo9aZuhc-4f4zAVXMgAT9x/exec';
 
 fetch(apiUrl, {
   mode: 'cors'
